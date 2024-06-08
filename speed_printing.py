@@ -1,21 +1,43 @@
-import time 
+import time
+from levenshtein import levenshtein
+from data_base import creat_table, table_exist, add_user, user_login
 
-def levenshtein(s1, s2):
-    n, m = len(s1), len(s2)
-    if n > m:
-        m, n = n, m
-        s1, s2 = s2, s1
 
-    curr_row = range(n + 1)
-    for i in range(1, m + 1):
-        prev_row, curr_row = curr_row, [i] + [0] * n
-        for j in range(1, n + 1):
-            inser = prev_row[j] + 1
-            delet = curr_row[j - 1] + 1
-            subs = prev_row[j - 1] + (s1[j - 1] != s2[i - 1])
-            curr_row[j] = min(inser, delet, subs)
-    
-    return curr_row[n]
+def main_menu():
+    print('1: Register')
+    print('2: Login')
+    print('3: Exit')
+
+def registration_user():
+    user_name_input = str(input('Enter your name: '))
+    user_password_input = str(input("Enter your password: "))
+    while True:
+        if 1 < user_name_input > 15 and user_password_input <= 8:
+            print('Registration successful')
+            add_user(user_name_input, user_password_input)
+            break
+        else:
+            print('Please enter corect username and password.')
+
+def login():
+    user_name_input = str(input('Please enter your user name: '))
+    user_password_input = str(input("Enter your password: "))
+    if user_name_input and user_password_input:
+        count = 0
+        while count != 3:
+            if not user_login(user_name_input, user_password_input):
+                count += 1
+                print('Wrong user name or password')
+                user_name_input = str(input('Please enter your user name: '))
+                user_password_input = str(input("Enter your password: "))
+            else:
+                print("login successful")
+                return True
+        return False
+        
+        
+
+
 
 def start_game():
     texts = ["Hello","In a small village by the sea, a young girl named Lily discovered a hidden cave filled with ancient treasures. She found gold coins, sparkling jewels, and mysterious maps. Excited by her discovery, Lily shared the news with her friends, and together they embarked on thrilling adventures that would change their lives forever.","Technology has revolutionized how we communicate, allowing people to connect instantly across the globe. Social media platforms enable us to share our lives, ideas, and experiences in real-time. However, it's crucial to balance screen time with face-to-face interactions to maintain strong personal relationships and mental well-being."]
@@ -39,10 +61,30 @@ def start_game():
     errors = levenshtein(selected_text, user_input)
     print(f'Time:{time_game}\nErrors:{errors}\nAccuracy: {((len(selected_text) - errors ) / len(selected_text)) * 100}')
 
+def main():
 
+    if not table_exist('game_data'):
+        creat_table()
+
+    while True:
+        main_menu()
+        choice = input("your choise: ")
+        if choice == '1':
+            registration_user()
+        elif choice == '2':
+            if login():
+                start = input("You wann to start game? y/n: ")
+                if start == 'y':
+                    start_game()
+                else:
+                    continue
+        elif choice == "3":
+            break
+        else:
+            print('invalide choice. try again')
 
 if __name__ == '__main__':
-    start_game()
+    main()
 
 
 
