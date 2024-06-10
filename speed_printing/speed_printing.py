@@ -97,9 +97,17 @@ def main():
 
 def start_game():
     global current_user
-    texts = ["""The quick brown fox jumps over the lazy dog. This sentence is a classic example of a pangram, a sentence that uses every letter of the alphabet at least once. Typing pangrams is a great way to practice typing because they ensure you cover a wide range of letters and keystrokes.""",
-             """In a small village by the sea, a young girl named Lily discovered a hidden cave filled with ancient treasures. She found gold coins, sparkling jewels, and mysterious maps. Excited by her discovery, Lily shared the news with her friends, and together they embarked on thrilling adventures that would change their lives forever.""",
-             """Technology has revolutionized how we communicate, allowing people to connect instantly across the globe. Social media platforms enable us to share our lives, ideas, and experiences in real-time. However, it's crucial to balance screen time with face-to-face interactions to maintain strong personal relationships and mental well-being."""]
+    texts = ["\tThe quick brown fox jumps over the lazy dog.\n" 
+            "This sentence is a classic example of a pangram, a sentence that uses every letter of the alphabet at least once.\n"
+            "Typing pangrams is a great way to practice typing because they ensure you cover a wide range of letters and keystrokes.\v",
+
+            "\tIn a small village by the sea, a young girl named Lily discovered a hidden cave filled with ancient treasures.\n"
+            "She found gold coins, sparkling jewels, and mysterious maps.\n"
+            "Excited by her discovery, Lily shared the news with her friends, and together they embarked on thrilling adventures that would change their lives forever.\v",
+
+            "\tTechnology has revolutionized how we communicate, allowing people to connect instantly across the globe.\n"
+            "Social media platforms enable us to share our lives, ideas, and experiences in real-time.\n"
+            "However, it's crucial to balance screen time with face-to-face interactions to maintain strong personal relationships and mental well-being."]
     print('Welcome to the typing speed training game.')
     time.sleep(2)
     for ind, text in enumerate(texts):
@@ -117,6 +125,9 @@ def start_game():
     user_input = str(input('>>>'))
     end_time = time.time()
     time_game = end_time - start_time
+    for char in selected_text:
+        if char == '\n' or char == '\t' or char == "\v":
+            selected_text = selected_text.replace(char, '') 
     errors = levenshtein(selected_text, user_input)
     accuracy = (len(selected_text) - errors) / len(selected_text) * 100
     print(f'Time:{time_game}\nErrors:{errors}\nAccuracy: {accuracy}')
