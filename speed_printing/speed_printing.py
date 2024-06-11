@@ -11,19 +11,21 @@ def registration_user():
     while True:
         if 1 <= len(user_name_input) <= 15 and len(user_password_input) >= 8:
             print('Registration successful')
-            add_user(user_name_input, user_password_input)
+            add_user(user_name_input, user_password_input) # Save user in database 
             break
         else:
-            print('Please enter correct username and password.')
+            print('Please enter correct username and password or press "ENTER" to exit')
             user_name_input = str(input('Enter your name: '))
             user_password_input = str(input("Enter your password: "))
+            if user_name_input == "" or user_password_input == "":
+                main()
 
 #_____________________________ESPACE USER_______________________________________
 
-current_user = None
+current_user = None #Create global user, we need for save current user 
 
 def login():
-    global current_user
+    global current_user 
     user_name_input = str(input('Please enter your user name: '))
     user_password_input = str(input("Enter your password: "))
     if user_name_input and user_password_input:   
@@ -37,7 +39,7 @@ def login():
             else:
                 print("login successful")
                 break
-    if user_login(user_name_input, user_password_input):
+    if user_login(user_name_input, user_password_input): #if sign in are successful, save user 
         current_user = user_name_input
         return current_user
 
@@ -63,15 +65,16 @@ def user_menu():
     print('1: Start game')
     print("2: Show records")
     print("3: Exit to main menu")
-    choice = input('Make your choice: ')
-    if choice == '1':
-        start_game()
-    elif choice == "2":
-        show_records()
-    elif choice == "3":
-        main()
-    else:
-        print('Invalid choice')
+    while True: 
+        choice = input('Make your choice: ')
+        if choice == '1':
+            start_game()
+        elif choice == "2":
+            show_records()
+        elif choice == "3":
+            main()
+        else:
+            print('Invalid choice')
 
 
 def main():
@@ -91,7 +94,7 @@ def main():
         elif choice == "3":
             break
         else:
-            print('invalide choice. try again')
+            print('invalid choice. Try again')
 
 #_______________________________ESPACE GAME_____________________________
 
@@ -120,21 +123,21 @@ def start_game():
     print(selected_text)
     print("_" * 100)
     time.sleep(2)
-    start_time = time.time()
     print("START")
+    start_time = time.time()
     user_input = str(input('>>>'))
     end_time = time.time()
-    time_game = end_time - start_time
+    time_game = end_time - start_time # Time count  
     for char in selected_text:
         if char == '\n' or char == '\t' or char == "\v":
             selected_text = selected_text.replace(char, '') 
-    errors = levenshtein(selected_text, user_input)
-    accuracy = (len(selected_text) - errors) / len(selected_text) * 100
+    errors = levenshtein(selected_text, user_input) # Count errors
+    accuracy = (len(selected_text) - errors) / len(selected_text) * 100 # Count accuracy writing
     print(f'Time:{time_game}\nErrors:{errors}\nAccuracy: {accuracy}')
-    set_user_achievement(current_user, time_game, accuracy)
+    set_user_achievement(current_user, time_game, accuracy) # Save user achievements in datebase 
     if time_game == get_time_records(current_user):
         print(f'You set a new record: {get_time_records(current_user)}')
-    user_menu()
+    user_menu() # Return to user menu 
 
 #__________________________START APPLICATION_______________
 if __name__ == '__main__':
